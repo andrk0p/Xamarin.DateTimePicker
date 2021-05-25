@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<animations:PopupPage  xmlns:animations="http://rotorgames.com"
+                       xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       x:Class="DateTimePicker.Views.DateTimePickerPopupPage"
+                       x:Name="thisPage">
+
+    <Frame VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
+           BackgroundColor="White" HasShadow="False" CornerRadius="5"
+           WidthRequest="250" IsClippedToBounds="True">
+        <Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto" RowSpacing="10">
+            <Button Grid.Column="0" Text="&#60;" Command="{Binding PreviousDayCommand}" BackgroundColor="Transparent" TextColor="Black"/>
+            <Label Grid.Column="1" Text="{Binding DayString}" TextColor="Black" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
+            <Button Grid.Column="2" Text="&#62;" Command="{Binding NextDayCommand}" BackgroundColor="Transparent" TextColor="Black"/>
+
+            <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                      HeightRequest="300"
+                      ItemsSource="{Binding Dates}"
+                      BackgroundColor="Transparent"
+                      VerticalScrollBarVisibility="Never"
+                      HorizontalScrollBarVisibility="Never"
+                      SeparatorVisibility="None"
+                      SelectionMode="None"
+                      Margin="15,0,15,15">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" TextColor="Black" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectTimeCommand, Source={x:Reference thisPage}}" CommandParameter="{Binding .}"/>
+                                </StackLayout.GestureRecognizers>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Frame>
+    
+</animations:PopupPage>
