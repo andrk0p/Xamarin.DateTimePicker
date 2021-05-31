@@ -2,15 +2,15 @@
 
 namespace DateTimePicker.Models
 {
-    public class DateTimeModel
+    internal class DateTimeModel : BaseNotifier
     {
-        public DateTimeModel(string name, DateTime time)
+        public DateTimeModel(DateTime time)
         {
-            Name = name;
             Time = time;
+            OnPropertyChanged(Value);
         }
 
-        public string Name { get; private set; }
+        public string Value => Time.ToShortTimeString();
 
         public DateTime Time { get; private set; }
     }

@@ -1,17 +1,10 @@
-﻿using System.ComponentModel;
+﻿using DateTimePicker.Models;
 using Xamarin.Forms;
 
 namespace DateTimePicker.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    internal class BaseViewModel : BaseNotifier
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public INavigation Navigation { get; set; }
-
-        public void OnPropertyChanged(string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

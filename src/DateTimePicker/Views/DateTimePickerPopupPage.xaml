@@ -3,6 +3,9 @@
                        xmlns="http://xamarin.com/schemas/2014/forms"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                        x:Class="DateTimePicker.Views.DateTimePickerPopupPage"
+                       xmlns:vm="clr-namespace:DateTimePicker.ViewModels"
+                       xmlns:m="clr-namespace:DateTimePicker.Models"
+                       x:DataType="vm:DateTimePickerVM"
                        x:Name="thisPage">
 
     <Frame VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
@@ -23,10 +26,10 @@
                       SelectionMode="None"
                       Margin="15,0,15,15">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="m:DateTimeModel">
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="{Binding Name}" TextColor="Black" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                <Label Text="{Binding Value}" TextColor="Black" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
                                 <StackLayout.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectTimeCommand, Source={x:Reference thisPage}}" CommandParameter="{Binding .}"/>
                                 </StackLayout.GestureRecognizers>
