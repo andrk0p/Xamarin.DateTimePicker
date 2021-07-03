@@ -17,10 +17,10 @@ namespace DateTimePicker
 
         public static DateTimePicker Instance { get => lazy.Value; }
 
-        public async Task<DateTime?> PickAsync()
+        public async ValueTask<DateTime?> PickAsync(int minuteStep = 30)
         {
-            var dateTimePickerPopupPage = new DateTimePickerPopupPage();
-            return await dateTimePickerPopupPage.OpenPopup();
+            var dateTimePickerPopupPage = new DateTimePickerPopupPage(minuteStep);
+            return await dateTimePickerPopupPage.OpenPageAndWaitResult();
         }
     }
 }

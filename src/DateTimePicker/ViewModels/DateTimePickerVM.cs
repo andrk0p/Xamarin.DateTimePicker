@@ -8,25 +8,27 @@ using Xamarin.Forms;
 
 namespace DateTimePicker.ViewModels
 {
-    internal class DateTimePickerVM : BaseViewModel
+    internal class DateTimePickerVM : BaseNotifier
     {
-        private DateTime currentDate = DateTime.Now;
-        public TaskCompletionSource<DateTime?> taskCompletion;
-        internal DateTimePickerVM()
+        private readonly int minuteStep;
+        internal TaskCompletionSource<DateTime?> taskCompletion;
+        private DateTime currentDate;
+
+        internal DateTimePickerVM(INavigation navigation, int minuteStep)
         {
-            SetDates();
-            SelectTimeCommand = new Command<DateTimeModel>(async (time) =>
-            {
-                taskCompletion.TrySetResult(time.Time);
-                await Navigation.PopPopupAsync();
-            });
+            ThrowExIfMinuteStepInValid(minuteStep);
+            this.minuteStep = minuteStep;
+            CurrentDate = DateTime.Now;
+            taskCompletion = new TaskCompletionSource<DateTime?>();
+
             PreviousDayCommand = new Command(() => CurrentDate = CurrentDate.AddDays(-1));
             NextDayCommand = new Command(() => CurrentDate = CurrentDate.AddDays(1));
+            SelectTimeCommand = new Command<DateTimeModel>(async time => await SetResultAndClosePage(time, navigation));
         }
 
-        public ICommand SelectTimeCommand { get; }
         public ICommand PreviousDayCommand { get; }
         public ICommand NextDayCommand { get; }
+        public ICommand SelectTimeCommand { get; }
 
         public List<DateTimeModel> Dates { get; private set; }
         public string DayString => CurrentDate.ToString("dd MMMM");
@@ -36,31 +38,56 @@ namespace DateTimePicker.ViewModels
             set
             {
                 currentDate = value;
-                SetDates();
+                SetListDates();
             }
         }
 
-        public void OnDisappearing() => taskCompletion.TrySetResult(null);
-
-        private void SetDates()
+        public void OnDisappearing(object sender, EventArgs e)
         {
-            var date = CurrentDate.Date + new TimeSpan(00, 00, 00);
-            var dates = new List<DateTimeModel>()
-            {
-                new DateTimeModel(date)
-            };
+            SetTaskCompletionResult(null);
+        }
 
-            while (true)
+        private void SetListDates()
+        {
+            var dates = new List<DateTimeModel>();
+
+            for (var date = CurrentDate.Date + new TimeSpan(00, 00, 00); !IsDateNotInRange(date); date = date.AddMinutes(minuteStep))
             {
-                date = date.AddMinutes(30);
-                if (date.Day > CurrentDate.Day || date.Month > CurrentDate.Month || date.Year > CurrentDate.Year)
-                    break;
                 dates.Add(new DateTimeModel(date));
             }
 
             Dates = dates;
             OnPropertyChanged(nameof(DayString));
             OnPropertyChanged(nameof(Dates));
+        }
+
+        private bool IsDateNotInRange(DateTime date)
+        {
+            return date.Day > CurrentDate.Day || date.Month > CurrentDate.Month || date.Year > CurrentDate.Year;
+        }
+
+        private async Task SetResultAndClosePage(DateTimeModel result, INavigation navigation)
+        {
+            SetTaskCompletionResult(result);
+            await ClosePopupPage(navigation);
+        }
+
+        private void SetTaskCompletionResult(DateTimeModel result)
+        {
+            taskCompletion.TrySetResult(result?.Time);
+        }
+
+        private async Task ClosePopupPage(INavigation navigation)
+        {
+            await navigation.PopPopupAsync();
+        }
+
+        private void ThrowExIfMinuteStepInValid(int minuteStep)
+        {
+            if (minuteStep < 1 || minuteStep > 59)
+            {
+                throw new Exception("The minute step should have values from 1 to 59");
+            }
         }
     }
 }

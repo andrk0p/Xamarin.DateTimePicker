@@ -12,7 +12,7 @@ namespace Sample
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            CurrentDateTime.Text = (await DateTimePicker.DateTimePicker.Instance.PickAsync()).ToString();
+            CurrentDateTime.Text = (await DateTimePicker.DateTimePicker.Instance.PickAsync(30)).ToString();
         }
     }
 }

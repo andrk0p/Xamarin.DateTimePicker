@@ -8,30 +8,60 @@
                        x:DataType="vm:DateTimePickerVM"
                        x:Name="thisPage">
 
-    <Frame VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
-           BackgroundColor="White" HasShadow="False" CornerRadius="5"
-           WidthRequest="250" IsClippedToBounds="True">
-        <Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto" RowSpacing="10">
-            <Button Grid.Column="0" Text="&#60;" Command="{Binding PreviousDayCommand}" BackgroundColor="Transparent" TextColor="Black"/>
-            <Label Grid.Column="1" Text="{Binding DayString}" TextColor="Black" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
-            <Button Grid.Column="2" Text="&#62;" Command="{Binding NextDayCommand}" BackgroundColor="Transparent" TextColor="Black"/>
+    <animations:PopupPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="WhiteColor">White</Color>
+            <Color x:Key="TransparentColor">Transparent</Color>
+            <Color x:Key="BlackColor">Black</Color>
 
-            <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                      HeightRequest="300"
-                      ItemsSource="{Binding Dates}"
-                      BackgroundColor="Transparent"
-                      VerticalScrollBarVisibility="Never"
-                      HorizontalScrollBarVisibility="Never"
-                      SeparatorVisibility="None"
-                      SelectionMode="None"
-                      Margin="15,0,15,15">
+            <Style TargetType="Frame">
+                <Setter Property="VerticalOptions" Value="CenterAndExpand"/>
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource WhiteColor}"/>
+                <Setter Property="HasShadow" Value="False"/>
+                <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="WidthRequest" Value="250"/>
+                <Setter Property="IsClippedToBounds" Value="True"/>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource TransparentColor}"/>
+                <Setter Property="TextColor" Value="{StaticResource BlackColor}"/>
+            </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource BlackColor}"/>
+                <Setter Property="VerticalOptions" Value="CenterAndExpand"/>
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+            </Style>
+
+            <Style TargetType="ListView">
+                <Setter Property="HeightRequest" Value="300"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource TransparentColor}"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Never"/>
+                <Setter Property="HorizontalScrollBarVisibility" Value="Never"/>
+                <Setter Property="SeparatorVisibility" Value="None"/>
+                <Setter Property="SelectionMode" Value="None"/>
+                <Setter Property="Margin" Value="15,0,15,15"/>
+            </Style>
+        </ResourceDictionary>
+    </animations:PopupPage.Resources>
+
+    <Frame>
+        <Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto" RowSpacing="10">
+            <Button Grid.Column="0" Text="&#60;" Command="{Binding PreviousDayCommand}"/>
+            <Label Grid.Column="1" Text="{Binding DayString}"/>
+            <Button Grid.Column="2" Text="&#62;" Command="{Binding NextDayCommand}"/>
+
+            <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Dates}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="m:DateTimeModel">
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="{Binding Value}" TextColor="Black" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                <Label Text="{Binding Value}"/>
                                 <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectTimeCommand, Source={x:Reference thisPage}}" CommandParameter="{Binding .}"/>
+                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectTimeCommand, Source={x:Reference thisPage}}"
+                                                          CommandParameter="{Binding .}"/>
                                 </StackLayout.GestureRecognizers>
                             </StackLayout>
                         </ViewCell>

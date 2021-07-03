@@ -11,26 +11,17 @@ namespace DateTimePicker.Views
     public partial class DateTimePickerPopupPage : PopupPage
     {
         private readonly DateTimePickerVM dateTimePickerVM;
-        public DateTimePickerPopupPage()
+        public DateTimePickerPopupPage(int minuteStep)
         {
             InitializeComponent();
 
-            dateTimePickerVM = new DateTimePickerVM()
-            {
-                Navigation = Navigation
-            };
+            dateTimePickerVM = new DateTimePickerVM(Navigation, minuteStep);
             BindingContext = dateTimePickerVM;
+            Disappearing += dateTimePickerVM.OnDisappearing;
         }
 
-        protected override void OnDisappearing()
+        public async ValueTask<DateTime?> OpenPageAndWaitResult()
         {
-            dateTimePickerVM.OnDisappearing();
-            base.OnDisappearing();
-        }
-
-        public async Task<DateTime?> OpenPopup()
-        {
-            dateTimePickerVM.taskCompletion = new TaskCompletionSource<DateTime?>();
             await Navigation.PushPopupAsync(this);
             return await dateTimePickerVM.taskCompletion.Task;
         }

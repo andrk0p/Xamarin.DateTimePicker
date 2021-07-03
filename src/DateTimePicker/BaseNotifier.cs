@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DateTimePicker.Models
+namespace DateTimePicker
 {
     internal class BaseNotifier : INotifyPropertyChanged
     {
