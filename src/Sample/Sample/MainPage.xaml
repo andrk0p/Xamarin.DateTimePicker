@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Sample.MainPage">
 
-    <StackLayout BackgroundColor="White">
+    <StackLayout VerticalOptions="CenterAndExpand" BackgroundColor="White">
         <Label x:Name="CurrentDateTime" TextColor="Black"/>
         <Button Text="Get DateTime" BackgroundColor="#2196F3" TextColor="White" Clicked="Button_Clicked"/>
     </StackLayout>

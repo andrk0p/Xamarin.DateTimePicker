@@ -1,37 +1,47 @@
-﻿using DateTimePicker.Models;
-using Rg.Plugins.Popup.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DateTimePicker.Models;
+using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 
 namespace DateTimePicker.ViewModels
 {
     internal class DateTimePickerVM : BaseNotifier
     {
-        private readonly int minuteStep;
         internal TaskCompletionSource<DateTime?> taskCompletion;
-        private DateTime currentDate;
 
-        internal DateTimePickerVM(INavigation navigation, int minuteStep)
+        private readonly int minuteStep;
+
+        internal DateTimePickerVM(
+            INavigation navigation,
+            DateTimePickerOptions options)
         {
-            ThrowExIfMinuteStepInValid(minuteStep);
-            this.minuteStep = minuteStep;
-            CurrentDate = DateTime.Now;
+            this.minuteStep = options.MinuteStep;
+            CurrentDate = options.CurrentDate;
             taskCompletion = new TaskCompletionSource<DateTime?>();
 
-            PreviousDayCommand = new Command(() => CurrentDate = CurrentDate.AddDays(-1));
-            NextDayCommand = new Command(() => CurrentDate = CurrentDate.AddDays(1));
-            SelectTimeCommand = new Command<DateTimeModel>(async time => await SetResultAndClosePage(time, navigation));
+            PreviousDayCommand = new Command(()
+                => CurrentDate = CurrentDate.AddDays(-1));
+            NextDayCommand = new Command(()
+                => CurrentDate = CurrentDate.AddDays(1));
+            SelectTimeCommand = new Command<DateTimeModel>(async time
+                => await SetResultAndClosePage(time, navigation));
         }
 
         public ICommand PreviousDayCommand { get; }
+
         public ICommand NextDayCommand { get; }
+
         public ICommand SelectTimeCommand { get; }
 
-        public List<DateTimeModel> Dates { get; private set; }
+        public IEnumerable<DateTimeModel> Dates { get; private set; }
+
         public string DayString => CurrentDate.ToString("dd MMMM");
+
+        private DateTime currentDate;
+
         public DateTime CurrentDate
         {
             get => currentDate;
@@ -63,31 +73,21 @@ namespace DateTimePicker.ViewModels
 
         private bool IsDateNotInRange(DateTime date)
         {
-            return date.Day > CurrentDate.Day || date.Month > CurrentDate.Month || date.Year > CurrentDate.Year;
+            return date.Day > CurrentDate.Day
+                || date.Month > CurrentDate.Month
+                || date.Year > CurrentDate.Year;
         }
 
         private async Task SetResultAndClosePage(DateTimeModel result, INavigation navigation)
         {
             SetTaskCompletionResult(result);
-            await ClosePopupPage(navigation);
+            await ClosePopupPageAsync(navigation);
         }
 
         private void SetTaskCompletionResult(DateTimeModel result)
-        {
-            taskCompletion.TrySetResult(result?.Time);
-        }
+            => taskCompletion.TrySetResult(result?.Time);
 
-        private async Task ClosePopupPage(INavigation navigation)
-        {
-            await navigation.PopPopupAsync();
-        }
-
-        private void ThrowExIfMinuteStepInValid(int minuteStep)
-        {
-            if (minuteStep < 1 || minuteStep > 59)
-            {
-                throw new Exception("The minute step should have values from 1 to 59");
-            }
-        }
+        private Task ClosePopupPageAsync(INavigation navigation)
+            => navigation.PopPopupAsync();
     }
 }

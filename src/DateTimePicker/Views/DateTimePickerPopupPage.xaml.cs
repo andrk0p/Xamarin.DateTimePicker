@@ -1,8 +1,9 @@
-﻿using DateTimePicker.ViewModels;
+﻿using System;
+using System.Threading.Tasks;
+using DateTimePicker.Models;
+using DateTimePicker.ViewModels;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
-using System;
-using System.Threading.Tasks;
 using Xamarin.Forms.Xaml;
 
 namespace DateTimePicker.Views
@@ -11,11 +12,12 @@ namespace DateTimePicker.Views
     public partial class DateTimePickerPopupPage : PopupPage
     {
         private readonly DateTimePickerVM dateTimePickerVM;
-        public DateTimePickerPopupPage(int minuteStep)
+
+        public DateTimePickerPopupPage(DateTimePickerOptions options)
         {
             InitializeComponent();
 
-            dateTimePickerVM = new DateTimePickerVM(Navigation, minuteStep);
+            dateTimePickerVM = new DateTimePickerVM(Navigation, options);
             BindingContext = dateTimePickerVM;
             Disappearing += dateTimePickerVM.OnDisappearing;
         }

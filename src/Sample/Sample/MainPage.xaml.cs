@@ -12,7 +12,8 @@ namespace Sample
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            CurrentDateTime.Text = (await DateTimePicker.DateTimePicker.Instance.PickAsync(30)).ToString();
+            var options = new DateTimePicker.Models.DateTimePickerOptions(DateTime.Now, 30);
+            CurrentDateTime.Text = (await DateTimePicker.DateTimePicker.Instance.PickAsync(options)).ToString();
         }
     }
 }
